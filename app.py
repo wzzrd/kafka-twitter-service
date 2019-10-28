@@ -42,7 +42,8 @@ for msg in consumer:
             print("url: " + url)
             
     insert_sql = """
-        insert into twitter values(
+        insert into twitter (name, screenname, userid, timestamp, url)
+        values(
         '{}',
         '{}',
         '{}',
