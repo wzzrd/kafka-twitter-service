@@ -11,7 +11,7 @@ conn_string = "host={} dbname={} user={} password={} port=5432".format(os.enviro
 conn = psycopg2.connect(conn_string)
 create_table_sql = """create table if not exists twitter (
     id serial primary key,
-    name varchar(255) not null,
+    username varchar(255) not null,
     screenname varchar(255) not null,
     userid bigint not null,
     timestamp timestamp not null,
@@ -38,7 +38,7 @@ consumer = KafkaConsumer(topic_name, group_id=consumer_group,
 for msg in consumer:
     txt = json.loads(msg.value)
     if os.environ['DEBUG']:
-        print("name: " + txt['twitterName'])
+        print("username: " + txt['twitterName'])
         print("screenname: " + txt['twitterScreenName'])
         print("id: " + str(txt['twitterID']))
         print("timestamp: " + txt['tweetCreatedAt'])
@@ -61,7 +61,7 @@ for msg in consumer:
                 image.save(tmpimage)
             blob = open(tmpimage, 'rb').read()
             insert_sql = """
-                insert into twitter (name, screenname, userid, timestamp, thumbnail, url)
+                insert into twitter (username, screenname, userid, timestamp, thumbnail, url)
                 values(
                 '{}',
                 '{}',
