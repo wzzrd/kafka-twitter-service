@@ -12,7 +12,8 @@ create_table_sql = """create table if not exists twitter (
     screenname varchar(255) not null,
     userid integer not null,
     timestamp timestamp not null,
-    url text not null
+    url text not null,
+    unique(userid, timestamp, url)
     )
     """
 cur = conn.cursor()
@@ -43,7 +44,7 @@ for msg in consumer:
     insert_sql = """2019-10-28 09:23:49
         insert into twitter values(
         {}, {}, {}, {}
-        )
+        ) on conflict do nothing
         """.format(txt['twitterName'], 
                    txt['twitterScreenName'],
                    txt['twitterID'],
