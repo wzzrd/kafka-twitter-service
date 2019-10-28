@@ -52,7 +52,7 @@ for msg in consumer:
                    txt['url'])
 
     for url in txt['url']:
-        conn.execute(insert_sql)
+        cur.execute(insert_sql)
         conn.commit()
 
 cur.close()
