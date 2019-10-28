@@ -16,7 +16,7 @@ for msg in consumer:
     txt = json.loads(msg.value)
     print("name: " + txt['twitterName'])
     print("screenname: " + txt['twitterScreenName'])
-    print("id: " + txt['twitterID'])
+    print("id: " + str(txt['twitterID']))
     print("timestamp: " + txt['tweetCreatedAt'])
     for url in txt['url']:
         print("url: " + txt['url'])
