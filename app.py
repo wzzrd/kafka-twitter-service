@@ -46,7 +46,7 @@ for msg in consumer:
         '{}',
         '{}',
         '{}',
-        select to_timestamp('{}', 'YYYY-MM-DD HH:MI:SS'),
+        to_timestamp('{}', 'YYYY-MM-DD HH:MI:SS'),
         '{}'
         ) on conflict do nothing
         """.format(txt['twitterName'], 
