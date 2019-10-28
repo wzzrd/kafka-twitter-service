@@ -46,17 +46,21 @@ for msg in consumer:
             print("url: " + url)
             
     for url in txt['url']:
+        print("Downloading image")
         tmpimage = urllib.request.urlretrieve(url, "/tmp/" + os.path.basename(url))[0]
+        print("Opening image")
         image = Image.open(tmpimage)
         image.load()
         height = image.size[0]
         width = image.size[1]
         if (height > 175) or (width > 175):
+            print("Resizing image")
             image.thumbnail((175, 175))
+            print("Saving resized image")
             image.save(tmpimage)
         blob = open(tmpimage, 'rb').read()
         insert_sql = """
-            insert into twitter (name, screenname, userid, timestamp, url)
+            insert into twitter (name, screenname, userid, timestamp, thumbnail, url)
             values(
             '{}',
             '{}',
@@ -69,7 +73,7 @@ for msg in consumer:
                     txt['twitterScreenName'],
                     txt['twitterID'],
                     txt['tweetCreatedAt'],
-                    psycopg2.Binary(blob),
+                    psycopg2.Binary(blob).getquoted(),
                     url)
         cur.execute(insert_sql)
         conn.commit()
