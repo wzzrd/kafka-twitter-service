@@ -1,3 +1,5 @@
+### https://raw.github.com/github/gitignore/86e01548dd97d6a1b5fc9ad303f10111b17ce0a9/Python.gitignore
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -45,7 +47,6 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
-.pytest_cache/
 
 # Translations
 *.mo
@@ -53,8 +54,9 @@ coverage.xml
 
 # Django stuff:
 *.log
+.static_storage/
+.media/
 local_settings.py
-db.sqlite3
 
 # Flask stuff:
 instance/
@@ -102,3 +104,5 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+
