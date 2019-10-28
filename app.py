@@ -15,4 +15,5 @@ consumer = KafkaConsumer(topic_name,
 for msg in consumer:
     txt = msg.value
     
-    print(txt.twitterName)
+    print(txt)
+    print(text['twitterName'])
