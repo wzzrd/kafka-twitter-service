@@ -41,7 +41,7 @@ for msg in consumer:
         for url in txt['url']:
             print("url: " + url)
             
-    insert_sql = """2019-10-28 09:23:49
+    insert_sql = """
         insert into twitter values(
         {},
         {},
