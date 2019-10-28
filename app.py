@@ -16,6 +16,8 @@ create_table_sql = """create table if not exists twitter (
     """
 cur = conn.cursor()
 cur.execute(create_table_sql)
+cur.close()
+conn.commit()
 
 print('Running Consumer...')
 
