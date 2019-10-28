@@ -19,4 +19,4 @@ for msg in consumer:
     print("id: " + str(txt['twitterID']))
     print("timestamp: " + txt['tweetCreatedAt'])
     for url in txt['url']:
-        print("url: " + txt['url'])
+        print("url: " + url)
