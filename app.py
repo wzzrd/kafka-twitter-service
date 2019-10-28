@@ -15,4 +15,4 @@ consumer = KafkaConsumer(topic_name, group_id=consumer_group,
 for msg in consumer:
     txt = msg.value
     
-    print(txt)
+    print(txt.twitterName)
