@@ -4,7 +4,7 @@ import psycopg2
 from kafka import KafkaConsumer
 
 print('Setting up database...')
-conn_string = "host={}, database={}, user={}, password={}".format(os.environ['DB_HOSTNAME'], os.environ['DB_NAME'], os.environ['DB_USER'], os.environ['DB_PASSWORD'])
+conn_string = "host={}, dbname={}, user={}, password={}".format(os.environ['DB_HOSTNAME'], os.environ['DB_NAME'], os.environ['DB_USER'], os.environ['DB_PASSWORD'])
 conn = psycopg2.connect(conn_string)
 create_table_sql = """create table if not exists twitter (
     id serial primary key,
