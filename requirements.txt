@@ -1,2 +1,4 @@
 kafka-python==1.4.6
 psycopg2==2.8.4
+Pillow==6.2.1
+

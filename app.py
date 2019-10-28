@@ -1,6 +1,9 @@
 import json
 import os
 import psycopg2
+import os.path
+import urllib.request
+from PIL import Image
 from kafka import KafkaConsumer
 
 print('Setting up database...')
@@ -13,6 +16,7 @@ create_table_sql = """create table if not exists twitter (
     userid bigint not null,
     timestamp timestamp not null,
     url text not null,
+    thumbnail blob not null,
     unique(userid, timestamp, url)
     )
     """
@@ -41,22 +45,32 @@ for msg in consumer:
         for url in txt['url']:
             print("url: " + url)
             
-    insert_sql = """
-        insert into twitter (name, screenname, userid, timestamp, url)
-        values(
-        '{}',
-        '{}',
-        '{}',
-        to_timestamp('{}', 'YYYY-MM-DD HH24:MI:SS'),
-        '{}'
-        ) on conflict do nothing
-        """.format(txt['twitterName'], 
-                   txt['twitterScreenName'],
-                   txt['twitterID'],
-                   txt['tweetCreatedAt'],
-                   url)
-
     for url in txt['url']:
+        tmpimage = urllib.request.urlretrieve(url, "/tmp/" + os.path.basename(url))[0]
+        image = Image.open(tmpimage)
+        image.load()
+        height = image.size[0]
+        width = image.size[1]
+        if (height > 175) or (width > 175):
+            image.thumbnail((175, 175))
+            image.save(tmpimage)
+        blob = open(tmpimage, 'rb').read()
+        insert_sql = """
+            insert into twitter (name, screenname, userid, timestamp, url)
+            values(
+            '{}',
+            '{}',
+            '{}',
+            to_timestamp('{}', 'YYYY-MM-DD HH24:MI:SS'),
+            '{}',
+            '{}'
+            ) on conflict do nothing
+            """.format(txt['twitterName'], 
+                    txt['twitterScreenName'],
+                    txt['twitterID'],
+                    txt['tweetCreatedAt'],
+                    psycopg2.Binary(blob),
+                    url)
         cur.execute(insert_sql)
         conn.commit()
 
