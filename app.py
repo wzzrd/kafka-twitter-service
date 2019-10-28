@@ -11,12 +11,13 @@ create_table_sql = """create table if not exists twitter (
     name varchar(255) not null,
     screenname varchar(255) not null,
     userid integer not null,
+    timestamp timestamp not null,
     url text not null
     )
     """
 cur = conn.cursor()
 cur.execute(create_table_sql)
-cur.close()
+cur.execute("set timezone = 'Europe/Amsterdam'")
 conn.commit()
 
 print('Running Consumer...')
@@ -38,3 +39,19 @@ for msg in consumer:
         print("timestamp: " + txt['tweetCreatedAt'])
         for url in txt['url']:
             print("url: " + url)
+            
+    insert_sql = """2019-10-28 09:23:49
+        insert into twitter values(
+        {}, {}, {}, {}
+        )
+        """.format(txt['twitterName'], 
+                   txt['twitterScreenName'],
+                   txt['twitterID'],
+                   txt['tweetCreatedAt'],
+                   txt['url'])
+
+    for url in txt['url']:
+        conn.execute(insert_sql)
+        conn.commit()
+
+cur.close()
