@@ -1,4 +1,5 @@
 import json
+import os
 from kafka import KafkaConsumer
 
 print('Running Consumer...')
