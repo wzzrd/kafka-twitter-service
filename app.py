@@ -16,7 +16,7 @@ create_table_sql = """create table if not exists twitter (
     userid bigint not null,
     timestamp timestamp not null,
     url text not null,
-    thumbnail blob not null,
+    thumbnail bytea not null,
     unique(userid, timestamp, url)
     )
     """
