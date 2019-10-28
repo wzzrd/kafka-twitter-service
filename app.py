@@ -66,14 +66,14 @@ for msg in consumer:
             '{}',
             '{}',
             to_timestamp('{}', 'YYYY-MM-DD HH24:MI:SS'),
-            '{}',
+            {},
             '{}'
             ) on conflict do nothing
             """.format(txt['twitterName'], 
                     txt['twitterScreenName'],
                     txt['twitterID'],
                     txt['tweetCreatedAt'],
-                    psycopg2.Binary(blob).getquoted(),
+                    psycopg2.Binary(blob),
                     url)
         cur.execute(insert_sql)
         conn.commit()
