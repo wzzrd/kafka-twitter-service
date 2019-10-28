@@ -43,7 +43,11 @@ for msg in consumer:
             
     insert_sql = """2019-10-28 09:23:49
         insert into twitter values(
-        {}, {}, {}, {}
+        {},
+        {},
+        {},
+        select to_timestamp('{}', 'YYYY-MM-DD HH:MI:SS'),
+        {}
         ) on conflict do nothing
         """.format(txt['twitterName'], 
                    txt['twitterScreenName'],
