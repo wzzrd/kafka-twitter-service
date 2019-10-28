@@ -13,7 +13,10 @@ consumer = KafkaConsumer(topic_name,
                          bootstrap_servers=bootstrap_servers, api_version=(0, 10))
 
 for msg in consumer:
-    txt = msg.value
-    
-    print(txt)
-    print(text['twitterName'])
+    txt = json.loads(msg.value)
+    print("name: " + txt['twitterName'])
+    print("screenname: " + txt['twitterScreenName'])
+    print("id: " + txt['twitterID'])
+    print("timestamp: " + txt['tweetCreatedAt'])
+    for url in txt['url']:
+        print("url: " + txt['url'])
