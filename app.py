@@ -10,7 +10,7 @@ create_table_sql = """create table if not exists twitter (
     id serial primary key,
     name varchar(255) not null,
     screenname varchar(255) not null,
-    userid integer not null,
+    userid bigint not null,
     timestamp timestamp not null,
     url text not null,
     unique(userid, timestamp, url)
