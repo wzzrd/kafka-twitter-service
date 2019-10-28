@@ -53,7 +53,7 @@ for msg in consumer:
                    txt['twitterScreenName'],
                    txt['twitterID'],
                    txt['tweetCreatedAt'],
-                   txt['url'])
+                   url)
 
     for url in txt['url']:
         cur.execute(insert_sql)
