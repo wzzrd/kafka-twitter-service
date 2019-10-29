@@ -65,7 +65,7 @@ for msg in consumer:
                 image.save(tmpimage)
             blob = open(tmpimage, 'rb').read()
             insert_sql = """
-                insert into twitter (username, screenname, userid, timestamp, thumbnail, url)
+                insert into twitter (username, screenname, userid, timestamp, filename, thumbnail, url)
                 values(
                 '{}',
                 '{}',
