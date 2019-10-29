@@ -1,14 +1,18 @@
 import json
 import os
-import psycopg2
 import os.path
 import urllib.request
 from urllib.parse import urlparse
+import psycopg2
 from PIL import Image
 from kafka import KafkaConsumer
 
 print('Setting up database...')
-conn_string = "host={} dbname={} user={} password={} port=5432".format(os.environ['DB_HOSTNAME'], os.environ['DB_NAME'], os.environ['DB_USER'], os.environ['DB_PASSWORD'])
+conn_string = "host={} dbname={} user={} password={} port=5432".format(
+    os.environ['DB_HOSTNAME'],
+    os.environ['DB_NAME'],
+    os.environ['DB_USER'],
+    os.environ['DB_PASSWORD'])
 conn = psycopg2.connect(conn_string)
 create_table_sql = """create table if not exists twitter (
     id serial primary key,
@@ -46,11 +50,11 @@ for msg in consumer:
         print("timestamp: " + txt['tweetCreatedAt'])
         for url in txt['url']:
             print("url: " + url)
-            
+
     for url in txt['url']:
         try:
             filename = os.path.basename(urlparse(url).path)
-            print("Downloading image {} from {}".format(filename, txt['twitterScreenName'])
+            print("Downloading image {} from {}".format(filename, txt['twitterScreenName']))
             tmpimage = urllib.request.urlretrieve(url, "/tmp/" + os.path.basename(url))[0]
             image = Image.open(tmpimage)
             image.load()
@@ -71,18 +75,18 @@ for msg in consumer:
                 {},
                 '{}'
                 ) on conflict do nothing
-                """.format(txt['twitterName'], 
-                        txt['twitterScreenName'],
-                        txt['twitterID'],
-                        txt['tweetCreatedAt'],
-                        filename,
-                        psycopg2.Binary(blob),
-                        url)
+                """.format(txt['twitterName'],
+                           txt['twitterScreenName'],
+                           txt['twitterID'],
+                           txt['tweetCreatedAt'],
+                           filename,
+                           psycopg2.Binary(blob),
+                           url)
             cur.execute(insert_sql)
             conn.commit()
         except:
             print("Image from {} failed: {}... Too bad!".format(
-                txt['twitterScreenName'], 
+                txt['twitterScreenName'],
                 os.path.basename(url)))
 
 cur.close()
