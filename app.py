@@ -3,6 +3,7 @@ import os
 import psycopg2
 import os.path
 import urllib.request
+from urllib.parse import urlparse
 from PIL import Image
 from kafka import KafkaConsumer
 
@@ -16,8 +17,9 @@ create_table_sql = """create table if not exists twitter (
     userid bigint not null,
     timestamp timestamp not null,
     url text not null,
+    filename varchar(255) not null,
     thumbnail bytea not null,
-    unique(userid, timestamp, url)
+    unique(userid, timestamp, filename)
     )
     """
 cur = conn.cursor()
@@ -47,17 +49,15 @@ for msg in consumer:
             
     for url in txt['url']:
         try:
-            print("Downloading image")
+            filename = os.path.basename(urlparse(url).path)
+            print("Downloading image {} from {}".format(filename, txt['twitterScreenName'])
             tmpimage = urllib.request.urlretrieve(url, "/tmp/" + os.path.basename(url))[0]
-            print("Opening image")
             image = Image.open(tmpimage)
             image.load()
             height = image.size[0]
             width = image.size[1]
             if (height > 175) or (width > 175):
-                print("Resizing image")
                 image.thumbnail((175, 175))
-                print("Saving resized image")
                 image.save(tmpimage)
             blob = open(tmpimage, 'rb').read()
             insert_sql = """
@@ -67,6 +67,7 @@ for msg in consumer:
                 '{}',
                 '{}',
                 to_timestamp('{}', 'YYYY-MM-DD HH24:MI:SS'),
+                '{}',
                 {},
                 '{}'
                 ) on conflict do nothing
@@ -74,6 +75,7 @@ for msg in consumer:
                         txt['twitterScreenName'],
                         txt['twitterID'],
                         txt['tweetCreatedAt'],
+                        filename,
                         psycopg2.Binary(blob),
                         url)
             cur.execute(insert_sql)
