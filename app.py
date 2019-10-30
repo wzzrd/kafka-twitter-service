@@ -38,6 +38,9 @@ topic_name = os.environ['KAFKA_TOPIC']
 bootstrap_servers = os.environ['KAFKA_BOOTSTRAP_SERVER'].split(",")
 consumer_group = os.environ['KAFKA_CONSUMER_GROUP']
 
+
+print("Setting up KafkaConsumer") if os.environ['DEBUG'] else print("")
+
 consumer = KafkaConsumer(topic_name, group_id=consumer_group,
                          bootstrap_servers=bootstrap_servers, api_version=(0, 10))
 
@@ -61,13 +64,16 @@ for msg in consumer:
             filename = os.path.basename(urlparse(url).path)
             print("Downloading image {} from {}".format(filename, txt['twitterScreenName']))
             tmpimage = urllib.request.urlretrieve(url, "/tmp/" + os.path.basename(url))[0]
+            print("Opening downloaded image") if os.environ['DEBUG'] else print("")
             image = Image.open(tmpimage)
             image.load()
             height = image.size[0]
             width = image.size[1]
             if (height > 175) or (width > 175):
+                print("Resizing image") if os.environ['DEBUG'] else print("")
                 image.thumbnail((175, 175))
                 image.save(tmpimage)
+            print("Reading blob") if os.environ['DEBUG'] else print("")
             blob = open(tmpimage, 'rb').read()
             insert_sql = """
                 insert into twitter (username, screenname, userid, timestamp, filename, thumbnail, url)
@@ -87,7 +93,9 @@ for msg in consumer:
                            filename,
                            psycopg2.Binary(blob),
                            url)
+            print("Executing SQL") if os.environ['DEBUG'] else print("")
             cur.execute(insert_sql)
+            print("Commiting SQL") if os.environ['DEBUG'] else print("")
             conn.commit()
         except:
             print("Image from {} failed: {}... Too bad!".format(
