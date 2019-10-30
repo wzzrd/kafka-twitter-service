@@ -43,6 +43,11 @@ consumer = KafkaConsumer(topic_name, group_id=consumer_group,
 
 for msg in consumer:
     txt = json.loads(msg.value)
+
+    if 'url' not in txt:
+        print("Skipping message as it lacks a url field...")
+        continue
+
     if os.environ['DEBUG']:
         print("username: " + txt['twitterName'])
         print("screenname: " + txt['twitterScreenName'])
